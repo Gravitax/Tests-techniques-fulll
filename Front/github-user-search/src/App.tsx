@@ -46,7 +46,6 @@ const   App: React.FC = () => {
 
     // useRef et intersection observer
     // pour detecter au scroll quand query l'API github
-    // WIP : n'est pas detecte si les 30 users rentrent dans le viewport directement :/
 
     const   targetRef = useRef(null);
     const   [isVisible, setIsVisible] = useState(false);
@@ -69,17 +68,21 @@ const   App: React.FC = () => {
         const   observer = new IntersectionObserver(callbackFunction, options);
         const   currentTarget = targetRef.current;
     
-        if (isVisible && users.length) {
-            const   searchbar = document.getElementById("searchbar") as HTMLInputElement;
-
-            fetchUsers(searchbar.value, pageCount + 1);
-        }
         if (currentTarget) observer.observe(currentTarget);
+
+        const   timer = setTimeout(() => {
+            if (isVisible && users.length) {
+                const   searchbar = document.getElementById("searchbar") as HTMLInputElement;
+    
+                fetchUsers(searchbar.value, pageCount + 1);
+            }
+        }, 500);
     
         return (() => {
             if (currentTarget) observer.unobserve(currentTarget);
+            clearTimeout(timer)
         });
-    }, [targetRef, options, isVisible]);
+    }, [targetRef, options, isVisible, users]);
 
     // ==========================================
 
