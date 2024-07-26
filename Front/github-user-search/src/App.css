@@ -22,12 +22,20 @@
 }
 
 #pagination {
+    display: flex;
+}
+
+#pagination div {
     display: flex; justify-content: center; align-items: center; gap: 10px;
 }
 
 #pagination p {
+    display: flex; justify-content: center; align-items: center; margin-left : 10px;
+}
+
+#pagination div p {
     border-radius: 30px; background-color: black; color: white;
-    height: 30px; width: 30px;
+    height: 30px; width: 30px; margin-left: 0;
     display: flex; justify-content: center; align-items: center;
     font-weight: bold;
     cursor: pointer;

@@ -11,33 +11,19 @@ const       SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     useEffect(() => {
         const   timer = setTimeout(() => {
             if (query.length > 2)
-                onSearch(query, 1);
+                onSearch(query, pageCount);
         }, 500);
 
         return (() => clearTimeout(timer));
-    }, [query, onSearch]);
+    }, [query, pageCount, onSearch]);
 
     const   pageUp = () => {
-        const   searchbar : any = document.getElementById("searchbar");
-        
-        if (searchbar) {
-            const   query : string = searchbar.value;
-            
-            setPageCount(pageCount + 1);
-            onSearch(query, pageCount);
-        }
+        setPageCount(pageCount + 1);
     };
 
     const   pageDown = () => {
         if (pageCount > 1) {
-            const   searchbar : any = document.getElementById("searchbar");
-            
-            if (searchbar) {
-                const   query : string = searchbar.value;
-
-                setPageCount(pageCount - 1);
-                onSearch(query, pageCount);
-            }
+            setPageCount(pageCount - 1);
         }
     };
 
@@ -52,8 +38,11 @@ const       SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
             {
                 query.length > 0 &&
                 <div id="pagination">
-                    <p onClick={pageUp}>+</p>
-                    <p onClick={pageDown}>-</p>
+                    <div>
+                        <p onClick={pageUp}>+</p>
+                        <p onClick={pageDown}>-</p>
+                    </div>
+                    <p>Page : {pageCount}</p>
                 </div>
             }
         </div>

@@ -38,7 +38,7 @@ const   App: React.FC = () => {
     // ==========================================
 
     const   handleSelectAll = () => {
-        // si il y a deja des users coche alors on decoche tout (toggle de coche)
+        // si tout les users sont selected alors on decoche tout (toggle de coche)
         if (selectedUsers.length === users.length) {
             setSelectedUsers([])
             return ;
@@ -54,11 +54,11 @@ const   App: React.FC = () => {
         let     users_duplicated : User[] = [];
         
         users_to_duplicate.map((user : User) => {
+            // on cree un nouveau pointer sinon ca va ecraser l'uid de l'original
             const   new_user = { ...user };
 
             new_user.uid = getUid();
-            // on cree un nouveau pointer sinon ca va ecraser l'uid de l'original
-            users_duplicated.push({ ...new_user });
+            users_duplicated.push(new_user);
         });
         // on ajoute aux users actuel les duplicats
         setUsers(users.concat(users_duplicated));
