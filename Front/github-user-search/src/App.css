@@ -1,0 +1,106 @@
+.App {
+    text-align: center;
+    padding-bottom: 40px;
+}
+
+.user-card {
+    display: flex;
+    align-items: center; flex-direction: column;
+    margin: 10px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    background: #f9f9f9;
+    position: relative;
+    width: 100px;
+}
+
+.user-card .checkbox {
+    position: absolute;
+    top: 5px; left: 5px;
+    display: none;
+}
+
+#pagination {
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+}
+
+#pagination p {
+    border-radius: 30px; background-color: black; color: white;
+    height: 30px; width: 30px;
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.editmode .checkbox {
+    display: block;
+}
+
+.editmode .actions {
+    display: block; visibility: visible;
+}
+
+#title {
+    width: 100%;
+    height: 64px;
+    color: black;
+    background-color: grey;
+    text-align: center;
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold;
+}
+#searchbar {
+    width: 25%; max-width: unset; min-width: 200px;
+    background-color: lightgrey;
+    color: black;
+    text-align: center;
+    margin: 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 18px; font-weight: bold;
+}
+#searchbar_container {
+    display: flex; justify-content: center; align-items: center;
+}
+
+#btn_mode { margin-bottom: 20px; }
+
+#searchbar::placeholder {
+    color: black;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px; margin-bottom: 10px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info p {
+    margin: 0;
+    margin-right: 10px; margin-bottom: 5px;
+}
+
+.user-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.actions {
+    margin: 20px; margin-top: 10px;
+    display: none; visibility: hidden;
+}
+
+input[type="text"] {
+    padding: 10px;
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+}
