@@ -8,9 +8,9 @@ interface   UserListProps {
     onCheck         : (id: number) => void;
 }
 
-const       UserList: React.FC<UserListProps> = ({ users, selectedUsers, onCheck }) => {
+const       UserList: React.FC<UserListProps> = ({ users, selectedUsers, onCheck }) => {    
     return (
-        <div className="user-list">
+        <div id="user_list">
             {users.map((user) => (
                 <UserCard
                     key={user.uid}

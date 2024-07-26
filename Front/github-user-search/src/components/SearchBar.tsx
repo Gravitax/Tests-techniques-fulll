@@ -15,16 +15,10 @@ const       SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         }, 500);
 
         return (() => clearTimeout(timer));
-    }, [query, pageCount, onSearch]);
+    }, [query, pageCount]);
 
     const   pageUp = () => {
         setPageCount(pageCount + 1);
-    };
-
-    const   pageDown = () => {
-        if (pageCount > 1) {
-            setPageCount(pageCount - 1);
-        }
     };
 
     return (
@@ -33,16 +27,17 @@ const       SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
                 type="text"
                 placeholder="Search input"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                    if (e.target.value.length > 2)
+                        setPageCount(1);
+                    setQuery(e.target.value)
+                }}
             />
             {
                 query.length > 0 &&
                 <div id="pagination">
-                    <div>
-                        <p onClick={pageUp}>+</p>
-                        <p onClick={pageDown}>-</p>
-                    </div>
-                    <p>Page : {pageCount}</p>
+                    <p onClick={pageUp}>+</p>
+                    <p>Loaded page : {pageCount}</p>
                 </div>
             }
         </div>

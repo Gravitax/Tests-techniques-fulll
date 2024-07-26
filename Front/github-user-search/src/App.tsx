@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import SearchBar from "./components/SearchBar";
 import UserList from "./components/UserList";
 import { User } from "./types/User";
@@ -14,26 +14,28 @@ const   App: React.FC = () => {
         return (Math.floor(Math.random() * 1000000));
     }
 
-    const   fetchUsers = useCallback(async (query : string, page : number) => {
-        try {
-            const   response = await fetch(`https://api.github.com/search/users?q=${query}&page=${page}`);
+    const   fetchUsers = (query : string, page : number) => {
+        fetch(`https://api.github.com/search/users?q=${query}&page=${page}`)
+            .then(response => response.json())
+            .then((data) => {
+                // on assigne un unique id a l'user pour gerer les duplicates
+                const   new_loaded_users : User[] = data.items.map((user : User) => {
+                    user.uid = getUid();
+                    return (user);
+                });
 
-            if (!response.ok)
-                throw new Error("Network response was not ok");
-            const   data = await response.json();
-            // on assigne un unique id a l'user pour gerer les duplicates
-            const   users : User[] = data.items.map((user : User) => {
-                user.uid = getUid();
-                return (user);
+                if (page === 1) {
+                    setUsers(new_loaded_users);
+                } else {
+                    setUsers(users.concat(new_loaded_users));
+                }
+
+                // on reset les users selected en cas de nouvelle recherche
+                setSelectedUsers([]);
+            }).catch((error) => {
+                console.error("Error fetching users:", error);
             });
-
-            setUsers(users || []);
-            // on reset les users selected en cas de nouvelle recherche
-            setSelectedUsers([]);
-        } catch (error) {
-            console.error("Error fetching users:", error);
-        }
-    }, []);
+    };
 
     // ==========================================
 
@@ -95,19 +97,24 @@ const   App: React.FC = () => {
 
     return (
         <div className={appClass}>
-            <div id="title">Github Search</div>
-            <SearchBar onSearch={fetchUsers} />
-            <br />
-            <div className="actions">
-                    <button onClick={handleSelectAll}>
-                        Select All ({selectedUsers.length})
-                    </button>
-                    <button onClick={handleDuplicate}>Duplicate</button>
-                    <button onClick={handleDelete}>Delete</button>
-            </div>
-            <button id="btn_mode" onClick={() => setEditMode(!editMode)}>
-                {editMode ? "Exit Edit Mode" : "Enter Edit Mode"}
-            </button>
+            <header>
+                <div id="title">Github Search</div>
+                <SearchBar onSearch={fetchUsers} />
+                { users.length > 0 &&
+                    <div className="actions">
+                        <button onClick={() => setEditMode(!editMode)}>
+                            {editMode ? "Exit Edit Mode" : "Enter Edit Mode"}
+                        </button>
+                        <div className="container">
+                            <button onClick={handleSelectAll}>
+                                Select All ({selectedUsers.length})
+                            </button>
+                            <button onClick={handleDuplicate}>Duplicate</button>
+                            <button onClick={handleDelete}>Delete</button>
+                        </div>
+                    </div>
+                }
+            </header>
             <UserList users={users} selectedUsers={selectedUsers} onCheck={handleCheck} />
         </div>
     );

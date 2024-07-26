@@ -1,11 +1,40 @@
+body, html {
+    padding: 0;
+    height: 100%;
+    /* overflow: hidden; */
+    box-sizing: border-box;
+}
+
 .App {
     text-align: center;
     padding-bottom: 40px;
+    display: flex; flex-direction: column;
+    position: relative; height: 100%
+}
+
+header {
+    width: 100%; position: fixed; height: 200px;
+    background-color: white; z-index: 100;
+}
+
+#user_list {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    overflow-y: auto;
+    margin-top: 200px;
+}
+
+#title {
+    width: 100%;
+    height: 64px;
+    color: black;
+    background-color: grey;
+    text-align: center;
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold;
 }
 
 .user-card {
-    display: flex;
-    align-items: center; flex-direction: column;
+    display: flex; align-items: center; flex-direction: column;
     margin: 10px;
     border: 1px solid #ddd;
     padding: 20px;
@@ -25,15 +54,7 @@
     display: flex;
 }
 
-#pagination div {
-    display: flex; justify-content: center; align-items: center; gap: 10px;
-}
-
-#pagination p {
-    display: flex; justify-content: center; align-items: center; margin-left : 10px;
-}
-
-#pagination div p {
+#pagination p:first-child {
     border-radius: 30px; background-color: black; color: white;
     height: 30px; width: 30px; margin-left: 0;
     display: flex; justify-content: center; align-items: center;
@@ -41,25 +62,29 @@
     cursor: pointer;
 }
 
+#pagination p:last-child {
+    display: flex; justify-content: center; align-items: center; margin-left : 10px;
+}
+
 .editmode .checkbox {
     display: block;
 }
 
-.editmode .actions {
+.editmode .actions .container {
     display: block; visibility: visible;
 }
 
-#title {
-    width: 100%;
-    height: 64px;
-    color: black;
-    background-color: grey;
-    text-align: center;
-    display: flex; justify-content: center; align-items: center;
-    font-weight: bold;
+.actions { display: flex; justify-content: flex-start; align-items: center; }
+
+.actions .container {
+    display: none; visibility: hidden;
 }
+
+.actions button { margin: 0 5px; }
+
 #searchbar {
     width: 25%; max-width: unset; min-width: 200px;
+    height: 40px;
     background-color: lightgrey;
     color: black;
     text-align: center;
@@ -68,11 +93,10 @@
     border: none;
     font-size: 18px; font-weight: bold;
 }
+
 #searchbar_container {
     display: flex; justify-content: center; align-items: center;
 }
-
-#btn_mode { margin-bottom: 20px; }
 
 #searchbar::placeholder {
     color: black;
@@ -95,20 +119,9 @@
     margin-right: 10px; margin-bottom: 5px;
 }
 
-.user-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.actions {
-    margin: 20px; margin-top: 10px;
-    display: none; visibility: hidden;
-}
-
-input[type="text"] {
-    padding: 10px;
-    width: 80%;
-    max-width: 600px;
-    margin: 20px auto;
+@media (max-width: 800px) {
+    header { height: 280px; }
+    #user_list { margin-top: 280px }
+    #searchbar_container { flex-direction: column; }
+    .actions button { margin: 5px; }
 }
