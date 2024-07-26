@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import SearchBar from "./components/SearchBar";
 import UserList from "./components/UserList";
 import { User } from "./types/User";
@@ -10,11 +10,18 @@ const   App: React.FC = () => {
     const   [selectedUsers, setSelectedUsers] = useState<number[]>([]);
     const   [editMode, setEditMode] = useState<boolean>(false);
 
+    const   [query, setQuery] = useState<string>("");
+    const   [pageCount, setPageCount] = useState<number>(1);
+
     const   getUid = () : number => {
         return (Math.floor(Math.random() * 1000000));
     }
 
     const   fetchUsers = (query : string, page : number) => {
+
+        setQuery(query);
+        setPageCount(page);
+
         fetch(`https://api.github.com/search/users?q=${query}&page=${page}`)
             .then(response => response.json())
             .then((data) => {
@@ -36,6 +43,41 @@ const   App: React.FC = () => {
                 console.error("Error fetching users:", error);
             });
     };
+
+    // ==========================================
+
+    const   targetRef = useRef(null);
+    const   [isVisible, setIsVisible] = useState(false);
+    
+    const   callbackFunction = (entries : any) => {
+        const   [entry] = entries;
+    
+        setIsVisible(entry.isIntersecting);
+    };
+    
+    const   options = useMemo(() => {
+        return ({
+            root        : null,
+            rootMargin  : "0px",
+            threshold   : 0,
+        });
+    }, []);
+    
+    useEffect(() => {
+        const   observer = new IntersectionObserver(callbackFunction, options);
+        const   currentTarget = targetRef.current;
+
+        console.log(isVisible, users.length);
+    
+        if (isVisible && users.length) {
+            fetchUsers(query, pageCount + 1);
+        }
+        if (currentTarget) observer.observe(currentTarget);
+    
+        return (() => {
+            if (currentTarget) observer.unobserve(currentTarget);
+        });
+    }, [targetRef, options, isVisible]);
 
     // ==========================================
 
@@ -98,6 +140,7 @@ const   App: React.FC = () => {
     return (
         <div className={appClass}>
             <header>
+                {/* <div id="title">Github Search {isVisible ? "visible" : "not visible"}</div> */}
                 <div id="title">Github Search</div>
                 <SearchBar onSearch={fetchUsers} />
                 { users.length > 0 &&
@@ -116,6 +159,7 @@ const   App: React.FC = () => {
                 }
             </header>
             <UserList users={users} selectedUsers={selectedUsers} onCheck={handleCheck} />
+            <div ref={targetRef}></div>
         </div>
     );
 };

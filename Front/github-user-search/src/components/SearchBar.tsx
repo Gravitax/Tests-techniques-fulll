@@ -6,20 +6,20 @@ interface   SearchBarProps {
 
 const       SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     const   [query, setQuery] = useState<string>("");
-    const   [pageCount, setPageCount] = useState<number>(1);
 
     useEffect(() => {
         const   timer = setTimeout(() => {
-            if (query.length > 2)
-                onSearch(query, pageCount);
+            if (query.length > 2) {
+                window.scrollTo({
+                    top         : 0,
+                    behavior    : "smooth",
+                });
+                onSearch(query, 1);
+            }
         }, 500);
 
         return (() => clearTimeout(timer));
-    }, [query, pageCount]);
-
-    const   pageUp = () => {
-        setPageCount(pageCount + 1);
-    };
+    }, [query]);
 
     return (
         <div id="searchbar_container">
@@ -28,18 +28,9 @@ const       SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
                 placeholder="Search input"
                 value={query}
                 onChange={(e) => {
-                    if (e.target.value.length > 2)
-                        setPageCount(1);
                     setQuery(e.target.value)
                 }}
             />
-            {
-                query.length > 0 &&
-                <div id="pagination">
-                    <p onClick={pageUp}>+</p>
-                    <p>Loaded page : {pageCount}</p>
-                </div>
-            }
         </div>
     );
 };
