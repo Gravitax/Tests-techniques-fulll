@@ -9,8 +9,6 @@ const   App: React.FC = () => {
     const   [users, setUsers] = useState<User[]>([]);
     const   [selectedUsers, setSelectedUsers] = useState<number[]>([]);
     const   [editMode, setEditMode] = useState<boolean>(false);
-
-    const   [query, setQuery] = useState<string>("");
     const   [pageCount, setPageCount] = useState<number>(1);
 
     const   getUid = () : number => {
@@ -18,8 +16,8 @@ const   App: React.FC = () => {
     }
 
     const   fetchUsers = (query : string, page : number) => {
-
-        setQuery(query);
+        // on tient le pageCount a jour car searchbar peut envoyer 1
+        // sur une nouvelle query
         setPageCount(page);
 
         fetch(`https://api.github.com/search/users?q=${query}&page=${page}`)
@@ -31,12 +29,12 @@ const   App: React.FC = () => {
                     return (user);
                 });
 
+                // si on demande la page 1 c'est qu'on reset la query
                 if (page === 1) {
                     setUsers(new_loaded_users);
-                } else {
+                } else { // sinon on concatene les new et les anciens
                     setUsers(users.concat(new_loaded_users));
                 }
-
                 // on reset les users selected en cas de nouvelle recherche
                 setSelectedUsers([]);
             }).catch((error) => {
@@ -45,6 +43,10 @@ const   App: React.FC = () => {
     };
 
     // ==========================================
+
+    // useRef et intersection observer
+    // pour detecter au scroll quand query l'API github
+    // WIP : n'est pas detecte si les 30 users rentrent dans le viewport directement :/
 
     const   targetRef = useRef(null);
     const   [isVisible, setIsVisible] = useState(false);
@@ -59,18 +61,18 @@ const   App: React.FC = () => {
         return ({
             root        : null,
             rootMargin  : "0px",
-            threshold   : 0,
+            threshold   : 0, // go voir le man si vous avez des questions
         });
     }, []);
     
     useEffect(() => {
         const   observer = new IntersectionObserver(callbackFunction, options);
         const   currentTarget = targetRef.current;
-
-        console.log(isVisible, users.length);
     
         if (isVisible && users.length) {
-            fetchUsers(query, pageCount + 1);
+            const   searchbar = document.getElementById("searchbar") as HTMLInputElement;
+
+            fetchUsers(searchbar.value, pageCount + 1);
         }
         if (currentTarget) observer.observe(currentTarget);
     

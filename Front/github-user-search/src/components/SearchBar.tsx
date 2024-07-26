@@ -10,10 +10,7 @@ const       SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     useEffect(() => {
         const   timer = setTimeout(() => {
             if (query.length > 2) {
-                window.scrollTo({
-                    top         : 0,
-                    behavior    : "smooth",
-                });
+                window.scrollTo({ top: 0 });
                 onSearch(query, 1);
             }
         }, 500);
