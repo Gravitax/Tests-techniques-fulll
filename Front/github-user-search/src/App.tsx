@@ -51,6 +51,24 @@ const   App: React.FC = () => {
 
     // ==========================================
 
+    const   [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const   timer = setTimeout(() => {
+            if (isVisible && users.length > 0) {
+                const   searchbar = document.getElementById("searchbar") as HTMLInputElement;
+    
+                fetchUsers(searchbar.value, pageCount + 1);
+            }
+        }, 500);
+
+        return (() => {
+            clearTimeout(timer)
+        });
+    }, [isVisible, users]);
+
+    // ==========================================
+
     const   handleSelectAll = () => {
         // si tout les users sont selected alors on decoche tout (toggle de coche)
         if (selectedUsers.length === users.length) {
@@ -129,7 +147,7 @@ const   App: React.FC = () => {
                 }
             </header>
             <UserList users={users} selectedUsers={selectedUsers} onCheck={handleCheck} />
-            <Observer ftFetch={fetchUsers} page={pageCount} users={users} />
+            <Observer setIsVisible={setIsVisible} />
         </div>
     );
 };
