@@ -4,9 +4,10 @@ import { User } from "../types/User";
 interface   ObserverProps {
     ftFetch : (query: string, page : number) => void;
     page    : number;
+    users   : User[];
 }
 
-const       Observer: React.FC<ObserverProps> = ({ ftFetch, page }) => {
+const       Observer: React.FC<ObserverProps> = ({ ftFetch, page, users }) => {
     // useRef et intersection observer
     // pour detecter au scroll quand query l'API github
     const   targetRef = useRef(null);
@@ -33,7 +34,7 @@ const       Observer: React.FC<ObserverProps> = ({ ftFetch, page }) => {
         if (currentTarget) observer.observe(currentTarget);
 
         const   timer = setTimeout(() => {
-            if (isVisible) {
+            if (isVisible && users.length > 0) {
                 const   searchbar = document.getElementById("searchbar") as HTMLInputElement;
     
                 ftFetch(searchbar.value, page + 1);
@@ -44,7 +45,7 @@ const       Observer: React.FC<ObserverProps> = ({ ftFetch, page }) => {
             if (currentTarget) observer.unobserve(currentTarget);
             clearTimeout(timer)
         });
-    }, [targetRef, options, isVisible]);
+    }, [targetRef, options, isVisible, users]);
 
     return (
 		<div ref={targetRef}></div>

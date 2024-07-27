@@ -129,7 +129,7 @@ const   App: React.FC = () => {
                 }
             </header>
             <UserList users={users} selectedUsers={selectedUsers} onCheck={handleCheck} />
-            <Observer ftFetch={fetchUsers} page={pageCount} />
+            <Observer ftFetch={fetchUsers} page={pageCount} users={users} />
         </div>
     );
 };
