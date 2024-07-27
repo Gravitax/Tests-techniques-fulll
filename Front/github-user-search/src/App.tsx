@@ -127,7 +127,7 @@ const   App: React.FC = () => {
 
     return (
         <div className={appClass}>
-            <Error code={httpCode} />
+            <Error code={httpCode} setCode={sethHttpCode} />
             <header>
                 <div id="title">Github Search</div>
                 <SearchBar onSearch={fetchUsers} />

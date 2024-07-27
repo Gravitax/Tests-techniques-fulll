@@ -2,9 +2,10 @@ import React from "react";
 
 interface   ErrorProps {
     code	: number;
+	setCode	: (code : number) => void;
 }
 
-const       Error: React.FC<ErrorProps> = ({ code }) => {
+const       Error: React.FC<ErrorProps> = ({ code, setCode }) => {
 	let	errorClass : string = "error"
 	let	errorMessage : string = "";
 
@@ -33,6 +34,7 @@ const       Error: React.FC<ErrorProps> = ({ code }) => {
 	const	on_click = (e : any) => {
 		e.target.className += " hide";
 		window.scrollTo({ top: 0 });
+		setCode(0);
 	};
 
     return (
