@@ -1,6 +1,8 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import SearchBar from "./components/SearchBar";
 import UserList from "./components/UserList";
+import Observer from "./components/Observer";
+import Error from "./components/Error";
 import { User } from "./types/User";
 
 import "./App.css";
@@ -10,6 +12,7 @@ const   App: React.FC = () => {
     const   [selectedUsers, setSelectedUsers] = useState<number[]>([]);
     const   [editMode, setEditMode] = useState<boolean>(false);
     const   [pageCount, setPageCount] = useState<number>(1);
+    const   [httpCode, sethHttpCode] = useState<number>(0);
 
     const   getUid = () : number => {
         return (Math.floor(Math.random() * 1000000));
@@ -21,7 +24,11 @@ const   App: React.FC = () => {
         setPageCount(page);
 
         fetch(`https://api.github.com/search/users?q=${query}&page=${page}`)
-            .then(response => response.json())
+            .then(response => {
+                // on stock le status de la response pour gerer les erreurs
+                sethHttpCode(response.status);
+                return (response.json());
+            })
             .then((data) => {
                 // on assigne un unique id a l'user pour gerer les duplicates
                 const   new_loaded_users : User[] = data.items.map((user : User) => {
@@ -41,48 +48,6 @@ const   App: React.FC = () => {
                 console.error("Error fetching users:", error);
             });
     };
-
-    // ==========================================
-
-    // useRef et intersection observer
-    // pour detecter au scroll quand query l'API github
-
-    const   targetRef = useRef(null);
-    const   [isVisible, setIsVisible] = useState(false);
-    
-    const   callbackFunction = (entries : any) => {
-        const   [entry] = entries;
-    
-        setIsVisible(entry.isIntersecting);
-    };
-    
-    const   options = useMemo(() => {
-        return ({
-            root        : null,
-            rootMargin  : "0px",
-            threshold   : 0, // go voir le man si vous avez des questions
-        });
-    }, []);
-    
-    useEffect(() => {
-        const   observer = new IntersectionObserver(callbackFunction, options);
-        const   currentTarget = targetRef.current;
-    
-        if (currentTarget) observer.observe(currentTarget);
-
-        const   timer = setTimeout(() => {
-            if (isVisible && users.length) {
-                const   searchbar = document.getElementById("searchbar") as HTMLInputElement;
-    
-                fetchUsers(searchbar.value, pageCount + 1);
-            }
-        }, 500);
-    
-        return (() => {
-            if (currentTarget) observer.unobserve(currentTarget);
-            clearTimeout(timer)
-        });
-    }, [targetRef, options, isVisible, users]);
 
     // ==========================================
 
@@ -144,8 +109,8 @@ const   App: React.FC = () => {
 
     return (
         <div className={appClass}>
+            <Error code={httpCode} />
             <header>
-                {/* <div id="title">Github Search {isVisible ? "visible" : "not visible"}</div> */}
                 <div id="title">Github Search</div>
                 <SearchBar onSearch={fetchUsers} />
                 { users.length > 0 &&
@@ -164,7 +129,7 @@ const   App: React.FC = () => {
                 }
             </header>
             <UserList users={users} selectedUsers={selectedUsers} onCheck={handleCheck} />
-            <div ref={targetRef}></div>
+            <Observer ftFetch={fetchUsers} page={pageCount} />
         </div>
     );
 };

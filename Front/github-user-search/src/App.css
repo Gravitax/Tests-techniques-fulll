@@ -5,6 +5,23 @@ body, html {
     box-sizing: border-box;
 }
 
+.hide {
+    display: none;
+    visibility: hidden;
+}
+
+.error {
+    width: 100%;
+    background: red;
+    height: 100px;
+    color: white;
+    display: flex; justify-content: center; align-items: center;
+    position: fixed;
+    bottom: 0;
+    z-index: 100; font-weight: bold;
+    cursor: pointer;
+}
+
 .App {
     text-align: center;
     padding-bottom: 40px;
@@ -121,6 +138,7 @@ header {
 
 @media (max-width: 800px) {
     header { height: 280px; }
+    .error { top: 280px; }
     #user_list { margin-top: 280px }
     #searchbar_container { flex-direction: column; }
     .actions button { margin: 5px; }
